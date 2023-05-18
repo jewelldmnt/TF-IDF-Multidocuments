@@ -1,0 +1,128 @@
+/*=============== GOOGLE FONTS ===============*/
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+
+/*=============== VARIABLES CSS ===============*/
+:root {
+    --header-height: 3.5rem;
+
+    /*========== Colors ==========*/
+    --hue: 228;
+    --first-color: hsl(0, 0%, 10%);
+    --first-color-alt: hsl(153, 18%, 88%);
+    --title-color: hsl(228, 8%, 95%);
+    --text-color: hsl(0, 0%, 10%);
+    --body-color: hsl(228, 50%, 12%);
+    --container-color: hsl(228, 58%, 8%);
+    --card-color: hsla(225, 25%, 22%, 0.473);
+    --project__tags-color: hsl(228, 20%, 30%);
+
+    /*========== Font and typography ==========*/
+    /*.5rem = 8px | 1rem = 16px ...*/
+    --body-font: "Poppins", sans-serif;
+    --biggest-font-size: 2rem;
+    --bigger-font-size: 1.75rem;
+    --h1-font-size: 1.5rem;
+    --h2-font-size: 1.25rem;
+    --h3-font-size: 1rem;
+    --normal-font-size: .938rem;
+    --small-font-size: .813rem;
+    --smaller-font-size: .75rem;
+    --tiny-font-size: .625rem;
+
+    /*========== Font weight ==========*/
+    --font-regular: 400;
+    --font-medium: 500;
+    --font-semi-bold: 600;
+}
+
+/* Header */
+.header {
+    position: fixed;
+    width: 100%;
+    background-color: var(--container-color);
+    top: 0;
+    left: 0;
+    z-index: var(--z-fixed);
+}
+
+.header__title {
+    font-size: var(--h1-font-size);
+    font-weight: var(--font-medium);
+    color: var(--first-color-alt);
+    margin-left: 4rem;
+}
+
+/* Main */
+.main {
+    margin: 2rem auto;
+    max-width: 800px;
+    padding: 0 1.5rem;
+}
+
+/* Sections */
+.section {
+    padding-block: 5rem 2rem;
+    margin-bottom: 2rem;
+    display: flex; /* Set sections as flex containers */
+    flex-direction: column; /* Align items vertically */
+    align-items: center; /* Center items horizontally */
+}
+
+.section__title {
+    font-size: var(--h2-font-size);
+    font-weight: var(--font-semi-bold);
+    margin-bottom: 1rem;
+    text-align: center; /* Center align section titles */
+}
+
+.section__subtitle {
+    font-size: var(--h3-font-size);
+    font-weight: var(--font-semi-bold);
+    margin-bottom: 0.5rem;
+    text-align: center; /* Center align section subtitles */
+}
+
+body {
+    font-family: var(--body-font);
+}
+
+/* Table */
+.words__occurrences-table {
+    border-collapse: collapse;
+    margin: 0 auto; /* Center the table */
+}
+
+.words__occurrences-table th,
+.words__occurrences-table td {
+    padding: 0.5rem;
+    text-align: left;
+    padding-left: 1rem;
+}
+
+.words__occurrences-table th {
+    font-weight: var(--font-medium);
+    background-color: var(--container-color);
+    color: var(--title-color);
+}
+
+.words__occurrences-table tbody tr td {
+    font-size: var(--normal-font-size); 
+}
+
+.words__occurrences-table tbody tr td:nth-child(1) {
+    background-color: var(--first-color-alt);
+    width: 3rem;
+    text-align: right;
+    padding-right: 1rem;
+}
+
+.words__occurrences-table tbody tr td:nth-child(2) {
+    width: 15rem;
+}
+
+/* Document Text */
+.document__text {
+    font-size: var(--normal-font-size);
+    line-height: 1.6;
+    color: var(--text-color);
+}

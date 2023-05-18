@@ -114,7 +114,6 @@ def get_top_keywords(tfidf, num_keywords):
         top_keywords[filename] = {word: str(round(score, 4)) for word, score in sorted_tfidf[:num_keywords]}
     return top_keywords
 
-
 def generate_html_summary(filename, top_keywords):
     output_folder = 'html_summary'
     if not os.path.exists(output_folder):
@@ -127,22 +126,50 @@ def generate_html_summary(filename, top_keywords):
                     '\t<meta http-equiv="X-UA-Compatible" content="IE=edge">\n' \
                     '\t<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' \
                     f'\t<title>{filename}</title>\n' \
-                    '\t<link rel="stylesheet" href="stylesheet.css">\n' \
+                    '\t<link rel="stylesheet" href="/CSS/stylesheet.css">\n' \
                     '</head>\n'
-    html_content += f'<body>\n' \
-                    '\t<section class="document__section">\n'
-    html_content += f'\t\t<h3 class="section__subtitle">TF-IDF Summary Scores</h3>\n' \
-                    f'\t\t<h1 class="section__title">Document title: {filename}</h1>\n' \
-                    '\t\t<div class="words__occurrences">\n' \
-                    '\t\t\t<ul class="words__occurrences-list">\n'
+    html_content += '<body>\n' \
+                    '\t<header class="header">\n' \
+                    '\t\t<h1 class="header__title"><span>TFIDF</span> Summary</h1>\n' \
+                    '\t</header>\n'
+    html_content += '<main class="main">\n' \
+                    '\t<section class="document__keywords_section section">\n' \
+                    f'\t\t<h2 class="section__title">Document Title: {filename}</h2>\n' \
+                    f'\t\t<h3 class="section__subtitle">TF-IDF Top {len(top_keywords.values())} keywords</h3>\n' \
+                    '\t\t<div class="words__occurrences container grid">\n' \
+                    '\t\t\t<table class="words__occurrences-table">\n' \
+                    '\t\t\t\t<thead>\n' \
+                    '\t\t\t\t\t<tr>\n' \
+                    '\t\t\t\t\t\t<th>Rank</th>\n' \
+                    '\t\t\t\t\t\t<th>Keyword</th>\n' \
+                    '\t\t\t\t\t\t<th>TF-IDF Score</th>\n' \
+                    '\t\t\t\t\t</tr>\n' \
+                    '\t\t\t\t</thead>\n' \
+                    '\t\t\t\t<tbody>\n'
+    rank = 1
     for keyword, score in top_keywords.items():
-        html_content += f'\t\t\t\t<li>{keyword} (TF-IDF Score: {score})</li>\n'  
-    html_content += '\t\t\t</ul>\n' \
+        html_content += f'\t\t\t\t<tr>\n' \
+                        f'\t\t\t\t\t<td>{rank}</td>\n' \
+                        f'\t\t\t\t\t<td>{keyword}</td>\n' \
+                        f'\t\t\t\t\t<td>{score}</td>\n' \
+                        f'\t\t\t\t</tr>\n'
+        rank += 1
+    html_content += '\t\t\t\t</tbody>\n' \
+                    '\t\t\t</table>\n' \
                     '\t\t</div>\n' \
                     '\t</section>\n' \
+                    '\t<section class="document_text_section section">\n' \
+                    '\t\t<h3 class="section__subtitle">Document Text</h3>\n' \
+                    '\t\t<div class="document_text_container container grid">\n' \
+                    '\t\t\t<p class="document__text">\n' \
+                    f'\t\t\t\t{documents_text[filename]}\n' \
+                    '\t\t\t</p>\n' \
+                    '\t\t</div>\n' \
+                    '\t</section>\n' \
+                    '</main>\n' \
                     '</body>\n' \
                     '</html>'
-
+                    
     # Save HTML file
     html_filename = f'{filename}_summary_document.html'
     output_path = os.path.join(output_folder, html_filename)
@@ -155,6 +182,7 @@ def generate_html_summary(filename, top_keywords):
 
 folder_path = './sample_documents'
 documents, filenames = load_documents(folder_path)
+documents_text = documents.copy()
 total_documents = len(documents)
 # Total documents in our corpus
 print(f"Total documents: {total_documents}")
@@ -201,7 +229,6 @@ print("\nTop Keywords:")
 for filename, keywords in top_keywords.items():
     generate_html_summary(filename, keywords)
     print(f"HTML file for {filename} was generated")
-    
     print(f"{filename}:")    
     for word, score in keywords.items():
         print(f"{word}: {score}")
