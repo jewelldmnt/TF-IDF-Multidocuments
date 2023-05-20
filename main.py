@@ -1,25 +1,45 @@
 import os
-import numpy as np
 import pandas as pd
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
-import nltk
 import math
-from string import punctuation
+import pdfplumber
+
 
 
 def load_documents(folder_path):
+    """
+    Loads documents from a specified folder path.
+
+    Args:
+        folder_path (str): The path to the folder containing the documents.
+
+    Returns:
+        documents, filenames (tuple): A tuple containing a dictionary of documents 
+        and a list of filenames.
+    """
     documents = {}
     filenames = []
     for filename in os.listdir(folder_path):
         filenames.append(filename)
-        with open(os.path.join(folder_path, filename), 'r') as file:
-            text = file.read()
+        with pdfplumber.open(os.path.join(folder_path, filename)) as pdf:
+            text = ""
+            for page in pdf.pages:
+                text += page.extract_text()
             documents[filename] = text
     return documents, filenames
 
 
 def tokenize_words(documents):
+    """
+    Tokenizes the words in the documents.
+
+    Args:
+        documents (dict): A dictionary containing the documents.
+
+    Returns:
+        documents (dict): A dictionary with tokenized words for each document.
+    """
     for filename, sentence in documents.items():
         words = [word.lower() for word in word_tokenize(sentence) if word.isalpha() and word not in stopwords.words("english")]
         documents[filename] = words
@@ -31,6 +51,16 @@ def tokenize_words(documents):
 
 
 def compute_term_occurrences(documents_contents):
+    """
+    Computes the occurrences of terms in the documents.
+
+    Args:
+        documents_contents (list): A list of documents' content.
+
+    Returns:
+        term_occurrences, total_term_occurrences (tuple): A tuple containing a list 
+        of term occurrences for each document and a dictionary of total term occurrences.
+    """
     term_occurrences = []
     total_term_occurrences = {word: 0 for word in word_set}  # Initialize total term occurrences
 
@@ -44,6 +74,14 @@ def compute_term_occurrences(documents_contents):
 
 
 def display_term_occurrences(term_occurrences):
+    """
+    Displays the term occurrences in a tabular format.
+
+    Args:
+        term_occurrences (list): A list of term occurrences for each document.
+    Returns:
+        None
+    """
     global sorted_word_set
     term_occurrences_df = pd.DataFrame(index=filenames, columns=sorted_word_set)
     for index, filename in enumerate(filenames):        
@@ -53,6 +91,15 @@ def display_term_occurrences(term_occurrences):
 
 
 def compute_term_frequency(documents):
+    """
+    Computes the term frequency for each document.
+
+    Args:
+        documents (list): A list of documents.
+
+    Returns:
+        term_frequency (list): A list of dictionaries containing the term frequency for each document.
+    """
     term_frequency = []
     for document in documents:
         term_frequency_dict = {}
@@ -67,6 +114,15 @@ def compute_term_frequency(documents):
 
 
 def display_term_frequency(term_frequency):
+    """
+    Displays the term frequency in a tabular format.
+
+    Args:
+        term_frequency (list): A list of term frequency dictionaries.
+    
+    Returns:
+        None
+    """
     global sorted_word_set
     term_frequency_df = pd.DataFrame(index=filenames, columns=sorted_word_set)
     for index, filename in enumerate(filenames):              
@@ -76,6 +132,16 @@ def display_term_frequency(term_frequency):
 
 
 def compute_inverse_document_frequency(total_documents, total_term_occurrences):
+    """
+    Computes the inverse document frequency (IDF) for each term.
+
+    Args:
+        total_documents (int): The total number of documents.
+        total_term_occurrences (dict): A dictionary of total term occurrences.
+
+    Returns:
+        idf_dict (dict): A dictionary containing the IDF for each term.
+    """
     idf_dict = {}
     
     global sorted_word_set
@@ -85,11 +151,30 @@ def compute_inverse_document_frequency(total_documents, total_term_occurrences):
 
 
 def display_idf(idf):
+    """
+    Displays the IDF values in a tabular format.
+
+    Args:
+        idf (dict): A dictionary containing the IDF values for each term.
+    
+    Returns:
+        None
+    """
     idf_df = pd.DataFrame.from_dict(idf, orient='index', columns=['idf'])
     print(idf_df)
 
 
 def compute_tfidf(term_frequency, idf):
+    """
+    Computes the TF-IDF scores for each term in the documents.
+
+    Args:
+        term_frequency (list): A list of dictionaries containing the term frequency for each document.
+        idf (dict): A dictionary containing the IDF values for each term.
+
+    Returns:
+        tfidf (list): A list of dictionaries containing the TF-IDF scores for each document.
+    """
     tfidf = []
     for index, dict in enumerate(term_frequency):
         tfidf_temp = {}
@@ -100,6 +185,15 @@ def compute_tfidf(term_frequency, idf):
 
 
 def display_tfidf(tfidf):
+    """
+    Displays the TF-IDF scores in a tabular format.
+
+    Args:
+        tfidf (list): A list of dictionaries containing the TF-IDF scores for each document.
+        
+    Returns:
+        None
+    """
     tfidf_df = pd.DataFrame(index=filenames, columns=sorted_word_set)
     for index, filename in enumerate(filenames):
         for word in sorted_word_set:
@@ -108,13 +202,37 @@ def display_tfidf(tfidf):
 
 
 def get_top_keywords(tfidf, num_keywords):
+    """
+    Retrieves the top keywords based on TF-IDF scores for each document.
+
+    Args:
+        tfidf (list): A list of dictionaries containing the TF-IDF scores for each document.
+        num_keywords (int): The number of top keywords to retrieve.
+
+    Returns:
+        top_keywords (dict): A dictionary containing the top keywords and their scores for each document.
+    """
     top_keywords = {}
     for index, filename in enumerate(filenames):
         sorted_tfidf = sorted(tfidf[index].items(), key=lambda x: x[1], reverse=True)
         top_keywords[filename] = {word: str(round(score, 4)) for word, score in sorted_tfidf[:num_keywords]}
     return top_keywords
 
+
 def generate_html_summary(filename, top_keywords):
+    """
+    Generates an HTML summary document its top keywords.
+
+    Args:
+        filename (str): The filename of the document.
+        top_keywords (dict): A dictionary containing the top keywords and their TF-IDF scores.
+
+    Note:
+        The generated HTML file is saved in the 'html_summary' folder.
+    
+    Returns:
+        None
+    """
     output_folder = 'html_summary'
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
@@ -180,6 +298,7 @@ def generate_html_summary(filename, top_keywords):
 
 
 
+# Main program
 folder_path = './sample_documents'
 documents, filenames = load_documents(folder_path)
 documents_text = documents.copy()
@@ -189,14 +308,11 @@ print(f"Total documents: {total_documents}")
 
 word_set = set()
 documents = tokenize_words(documents)
-print(f"Documents: {documents}")
 documents_list = list(documents.values())
-print(f"Document lists: {documents_list}")
 
 word_index = {word: i for i, word in enumerate(word_set)}
 sorted_word_set = sorted(word_set, key=lambda x: word_index[x])
-print(f"\nword_index: {word_index}")
-print(f"\nsorted words: {sorted_word_set}\n\n")
+
 
 for index, filename in enumerate(filenames):
     print(f"{filename} length = {len(documents_list[index])}")
@@ -233,5 +349,3 @@ for filename, keywords in top_keywords.items():
     for word, score in keywords.items():
         print(f"{word}: {score}")
     print()
-
-
