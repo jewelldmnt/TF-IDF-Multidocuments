@@ -1,0 +1,96 @@
+variables and their sample contents
+
+
+documents (dictionary) = {
+    **filename1**: {**contents**},
+    **filename2**: **contents**,
+    **filenameN**: **contents**
+}
+
+
+filenames (list) = [
+    **filename1**,
+    **filename2**,
+    **filenameN
+]
+
+
+word_set (set) = {
+    **word1**,
+    **word2**,
+    **wordN**
+}
+
+
+documents_list (list) = [
+    **contents of filename1**,
+    **contents of filename2**,
+    **contents of filenameN**
+]
+
+word_index (dict) = {
+    **word1**: **index**,
+    **word2**: **index**,
+    **wordN**: **index**
+}
+
+sorted_word_set (list) = [
+    **word1**,
+    **word2**,
+    **wordN**
+]
+
+term_occurrences (list of dictionary) [
+    **filename1**{
+            **word1**: **occurrences**,
+            **word2**: **occurrences**,
+            **wordN**: **occurrences** 
+    }, 
+    
+    **filename2**{
+            **word1**: **occurrences**,
+            **word2**: **occurrences**,
+            **wordN**: **occurrences** 
+    }, 
+
+    **filenameN**{
+            **word1**: **occurrences**,
+            **word2**: **occurrences**,
+            **wordN**: **occurrences** 
+    }
+]
+
+total_term_occurrences (dict) = {
+            **word2**: **total occurrences in all documents**,
+            **word1**: **total occurrences in all documents**,
+            **wordN**: **total occurrences in all documents** 
+}
+
+
+term_frequency (list of dictionary) = {
+    **filename1**{
+            **word1**: **frequency**,
+            **word2**: **frequency**,
+            **wordN**: **frequency** 
+    }, 
+    
+    **filename2**{
+            **word1**: **frequency**,
+            **word2**: **frequency**,
+            **wordN**: **frequency** 
+    }, 
+
+    **filenameN**{
+            **word1**: **frequency**,
+            **word2**: **frequency**,
+            **wordN**: **frequency** 
+    }
+}
+
+
+idf (dictionary) = {
+    **word1**: **idf score**,
+    **word2**: **idf score**,
+    **wordN**: **idf score**
+}
+
